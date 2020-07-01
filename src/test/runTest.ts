@@ -13,18 +13,19 @@ import { runTests, downloadAndUnzipVSCode, resolveCliPathFromVSCodeExecutablePat
         const extensionTestsPath = path.resolve(__dirname, './suite/index');
 
         // Download VS Code and unzip it
-        const vscodeExecutablePath = await downloadAndUnzipVSCode('1.41.1');
+        const vscodeExecutablePath = await downloadAndUnzipVSCode('');
+        const launchArgs = ['--user-data-dir', '/tmp/data'];
 
         const cliPath = resolveCliPathFromVSCodeExecutablePath(vscodeExecutablePath);
 
         // Install vscode-java extension to downloaded vscode
-        cp.spawnSync(cliPath, ['--install-extension', 'redhat.java'], {
+        cp.spawnSync(cliPath, ['--user-data-dir', '/tmp/data', '--install-extension', 'redhat.java'], {
             encoding: 'utf-8',
             stdio: 'inherit'
         });
 
         // run the integration test
-        await runTests({ vscodeExecutablePath, extensionDevelopmentPath, extensionTestsPath });
+        await runTests({ vscodeExecutablePath, extensionDevelopmentPath, extensionTestsPath, launchArgs });
     } catch (err) {
         console.error('Failed to run tests');
         process.exit(1);
